@@ -38,7 +38,7 @@ export default function UserPage() {
 
   useEffect(() => {
     handleFetchDataRainfall();
-    const websocket = new WebSocket('ws://193.203.167.97:8787/ws');
+    const websocket = new WebSocket(`${BaseURLws}/ws`);
     websocket.onopen = () => {
       console.log('Websocket is open');
     };
@@ -56,7 +56,7 @@ export default function UserPage() {
 
   const handleFetchDataRainfall = async () => {
     try {
-      const response = await axios.get('https://rainfall-be.techlabcode.cloud/data');
+      const response = await axios.get(`${BaseURL}/data`);
       setRainfallData(response.data.data);
     } catch (error) {
       console.error('Error fetching data: ', error);

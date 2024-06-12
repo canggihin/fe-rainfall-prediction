@@ -20,7 +20,7 @@ export default function AppView() {
 
   useEffect(() => {
     handleFetchDataAvg();
-    const websocket = new WebSocket('ws://193.203.167.97:8787/ws');
+    const websocket = new WebSocket(`${BaseURLws}/ws`);
     websocket.onopen = () => {
       console.log('Websocket is open');
     };
@@ -38,7 +38,7 @@ export default function AppView() {
   
   const handleFetchDataAvg = async () => {
     try {
-      const response = await axios.get('https://rainfall-be.techlabcode.cloud/reportday');
+      const response = await axios.get(`${BaseURL}/reportday`);
       const temperatures = response.data.data.map(item => parseFloat(item.temperature));
       const humidities = response.data.data.map(item => parseFloat(item.humidity));
       const pressures = response.data.data.map(item => parseFloat(item.pressure));
