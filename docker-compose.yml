@@ -1,6 +1,7 @@
 version: '3.8'
 services:
   vite-app:
+    image: argyarijal/fe-iot-rainfall-prediction:canary
     ports:
       - "3001:3030"
     networks:
