@@ -16,5 +16,6 @@ COPY . .
 # Build the app
 RUN yarn build
 
+EXPOSE 3030
 # Command to run your app using Vite preview
 CMD ["yarn", "start"]

@@ -2,6 +2,7 @@ import path from 'path';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import checker from 'vite-plugin-checker';
+import { tr } from 'date-fns/locale';
 
 // ----------------------------------------------------------------------
 
@@ -28,8 +29,12 @@ export default defineConfig({
   },
   server: {
     port: 3030,
+    strictPort: true,
+    host: true,
+    origin: 'http://0.0.0.0:3030',
   },
   preview: {
     port: 3030,
+    strictPort: true,
   },
 });
