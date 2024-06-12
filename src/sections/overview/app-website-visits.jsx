@@ -23,7 +23,17 @@ export default function AppWebsiteVisits({ title, subheader, chart, ...other }) 
     },
     labels,
     xaxis: {
-      type: 'datetime',
+      type: 'date',
+    },
+    yaxis: {
+      labels: {
+        formatter: (value) => {
+          if (typeof value !== 'undefined') {
+            return `${value.toFixed(1)}`;
+          }
+          return value;
+        },
+      },
     },
     tooltip: {
       shared: true,
@@ -31,7 +41,7 @@ export default function AppWebsiteVisits({ title, subheader, chart, ...other }) 
       y: {
         formatter: (value) => {
           if (typeof value !== 'undefined') {
-            return `${value.toFixed(0)} visits`;
+            return `${value.toFixed(1)}`;
           }
           return value;
         },

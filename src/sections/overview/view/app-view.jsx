@@ -1,13 +1,57 @@
+import axios from 'axios';
+import { useState, useEffect } from 'react';
+
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 
-import AppCurrentVisits from '../app-current-visits';
 import AppWebsiteVisits from '../app-website-visits';
+
 
 // ----------------------------------------------------------------------
 
+
 export default function AppView() {
+
+  const [dataTemp, setDataTemp] = useState([]);
+  const [dataHumd, setDataHumd] = useState([]);
+  const [dataPress, setDataPress] = useState([]);
+  const [formattedTime, setFormattedTime] = useState([]);
+
+  useEffect(() => {
+    handleFetchDataAvg();
+    const websocket = new WebSocket('ws://193.203.167.97:8787/ws');
+    websocket.onopen = () => {
+      console.log('Websocket is open');
+    };
+    websocket.onmessage = (event) => {
+      console.log('Websocket message: ', event.data);
+      handleFetchDataAvg();
+    };
+    websocket.onclose = () => {
+      console.log('Websocket is closed');
+    };
+    return () => {
+      websocket.close();
+    };
+  }, []);
+  
+  const handleFetchDataAvg = async () => {
+    try {
+      const response = await axios.get('https://rainfall-be.techlabcode.cloud/reportday');
+      const temperatures = response.data.data.map(item => parseFloat(item.temperature));
+      const humidities = response.data.data.map(item => parseFloat(item.humidity));
+      const pressures = response.data.data.map(item => parseFloat(item.pressure));
+      const formattedTimes = response.data.data.map(item => item.formattedTime);
+
+      setDataTemp(temperatures);
+      setDataHumd(humidities);
+      setDataPress(pressures);
+      setFormattedTime(formattedTimes);
+    } catch (error) {
+      console.error('Error fetching data: ', error);
+    }
+  };  
   return (
     <Container maxWidth="xl">
       <Typography variant="h4" sx={{ mb: 5 }}>
@@ -15,62 +59,36 @@ export default function AppView() {
       </Typography>
 
       <Grid container spacing={3}>
-        <Grid xs={12} md={6} lg={8}>
+        <Grid xs={16} md={12} lg={12}>
           <AppWebsiteVisits
-            title="Website Visits"
-            subheader="(+43%) than last year"
+            title="Average Data Atmosphere When Rainfall Per Day"
+            subheader="This is the average data per day for the rainfall dataset."
             chart={{
-              labels: [
-                '01/01/2003',
-                '02/01/2003',
-                '03/01/2003',
-                '04/01/2003',
-                '05/01/2003',
-                '06/01/2003',
-                '07/01/2003',
-                '08/01/2003',
-                '09/01/2003',
-                '10/01/2003',
-                '11/01/2003',
-              ],
+              labels: formattedTime,
               series: [
                 {
-                  name: 'Team A',
+                  name: 'Air Pressure',
                   type: 'column',
                   fill: 'solid',
-                  data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30],
+                  data: dataPress,
+                  
                 },
                 {
-                  name: 'Team B',
+                  name: 'Air Humidity',
                   type: 'area',
                   fill: 'gradient',
-                  data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43],
+                  data: dataHumd,
                 },
                 {
-                  name: 'Team C',
+                  name: 'Air Temperature',
                   type: 'line',
                   fill: 'solid',
-                  data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39],
+                  data: dataTemp,
                 },
               ],
             }}
           />
         </Grid>
-
-        <Grid xs={12} md={6} lg={4}>
-          <AppCurrentVisits
-            title="Current Visits"
-            chart={{
-              series: [
-                { label: 'America', value: 4344 },
-                { label: 'Asia', value: 5435 },
-                { label: 'Europe', value: 1443 },
-                { label: 'Africa', value: 4443 },
-              ],
-            }}
-          />
-        </Grid>
-
       </Grid>
     </Container>
   );
