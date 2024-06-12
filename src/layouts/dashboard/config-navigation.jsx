@@ -17,6 +17,11 @@ const navConfig = [
     path: '/data',
     icon: icon('ic_user'),
   },
+  {
+    title: 'Device Status',
+    path: '/device',
+    icon: icon('ic_lock'),
+  },
 ];
 
 export default navConfig;
