@@ -20,7 +20,7 @@ const navConfig = [
   {
     title: 'Device Status',
     path: '/device',
-    icon: icon('ic_lock'),
+    icon: icon('ic_status'),
   },
 ];
 

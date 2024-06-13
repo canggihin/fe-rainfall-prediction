@@ -1,71 +1,97 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
+import Grid from '@mui/material/Grid';
+import Avatar from '@mui/material/Avatar';
+import ListItem from '@mui/material/ListItem';
 import Container from '@mui/material/Container';
+import WifiIcon from '@mui/icons-material/Wifi';
 import Typography from '@mui/material/Typography';
+import ListItemText from '@mui/material/ListItemText';
+import LanguageIcon from '@mui/icons-material/Language';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import PermScanWifiIcon from '@mui/icons-material/PermScanWifi';
+import OpenInBrowserIcon from '@mui/icons-material/OpenInBrowser';
+import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
 
 export default function DeviceView() {
-    const [seconds, setSeconds] = useState(30);  // State to hold the countdown seconds
-
-    useEffect(() => {
-        // Only set up the timer if seconds is greater than 0
-        if (seconds > 0) {
-            const timer = setTimeout(() => {
-                setSeconds(seconds - 1);  // Decrement seconds after 1 second
-            }, 1000);
-
-            // Return a function to clear the timeout if the component unmounts or the effect re-runs
-            return () => clearTimeout(timer);
-        }
-        return () => {};
-    }, [seconds]);  
-
     return (
         <Container>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={1}>
-                <Typography variant="h4">Device Online Status</Typography>
-            </Stack>
-            
+            <Typography variant="h3" align="center" mb={3}>
+                Device Does’t Connect To WIFI ....
+            </Typography>
+            <Typography sx={{ color: 'text.secondary', mb: 4 }} align="center">
+                please connect to wifi with the following steps ..
+            </Typography>
+            <Grid container spacing={2} justifyContent="center">
+                <Grid item xs={12} sm={6} md={4}>
+                    <ListItem>
+                        <ListItemAvatar>
+                            <Avatar>
+                                <WifiIcon />
+                            </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText primary="Open Mobile Apps or Computers" secondary="Find WIFI Setting" />
+                    </ListItem>
+                    <ListItem>
+                        <ListItemAvatar>
+                            <Avatar>
+                                <PermScanWifiIcon />
+                            </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText primary="Enter the wifi name or SSID, and password" secondary="in this step doing 2 times" />
+                    </ListItem>
+                </Grid>
+                <Grid item xs={12} sm={6} md={4}>
+                    <ListItem>
+                        <ListItemAvatar>
+                            <Avatar>
+                                <ConnectWithoutContactIcon />
+                            </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText primary="Connect the wifi" secondary="on the cell phone to the ESP32Kit" />
+                    </ListItem>
+                    <ListItem>
+                        <ListItemAvatar>
+                            <Avatar>
+                                <CheckCircleIcon />
+                            </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText primary="The device is successfully connected" secondary="in this step doing 2 times" />
+                    </ListItem>
+                </Grid>
+                <Grid item xs={12} sm={6} md={4}>
+                    <ListItem>
+                        <ListItemAvatar>
+                            <Avatar>
+                                <LanguageIcon />
+                            </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText primary="Open a web browser" secondary="(safari, google chrome, mozilla)" />
+                    </ListItem>
+                    <ListItem>
+                        <ListItemAvatar>
+                            <Avatar>
+                                <OpenInBrowserIcon />
+                            </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText primary="Enter the address" secondary="http://172.9.0.0" />
+                    </ListItem>
+                </Grid>
+            </Grid>
             <Box
+                component="img"
                 sx={{
-                    py: 12,
-                    maxWidth: 580,
-                    mx: 'auto',
-                    display: 'flex',
-                    minHeight: '10vh',
-                    textAlign: 'center',
-                    alignItems: 'center',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
+                    width: 0.9,
+                    maxHeight: 300,
+                    my: 4, // Margin vertical
+                    display: 'block', // Ensures the image does not inline with text
+                    mx: 'auto' // Centers the image horizontally
                 }}
-                >
-                {seconds > 0 ? (
-                    <Typography variant="h3" sx={{ mb: 3 }}>
-                        Finding Connection In {seconds} seconds...
-                    </Typography>
-                ) : (
-                    <Typography variant="h3" sx={{ mb: 3 }}>
-                        Device Not Connected....
-                    </Typography>
-                )}
-                
-                <Typography sx={{ color: 'text.secondary' }}>
-                    Sorry, we couldn’t find the page you’re looking for. Perhaps you’ve mistyped the URL? Be
-                    sure to check your spelling.
-                </Typography>
-                <Box
-                    alignItems="center"
-                    component="img"
-                    src="/assets/connecting.svg"
-                    sx={{
-                    mx: 'auto',
-                    height: 260,
-                    my: { xs: 5, sm: 10 },
-                    }}
-                    />
-            </Box>
-            
+                src="/assets/connecting1.svg"
+                alt="Connecting to Wi-Fi"
+            />
         </Container>
     );
 }
