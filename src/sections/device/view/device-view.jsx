@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -15,83 +15,133 @@ import PermScanWifiIcon from '@mui/icons-material/PermScanWifi';
 import OpenInBrowserIcon from '@mui/icons-material/OpenInBrowser';
 import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
 
+import { BaseURLws } from '../../../config/configVars';
+
 export default function DeviceView() {
+
+    const [connected, setConnected] = useState(false)
+
+    useEffect(() => {
+        const websocket = new WebSocket(`${BaseURLws}/ws`);
+        websocket.onopen = () => {
+          console.log('Websocket is open');
+        };
+        websocket.onmessage = (event) => {
+            const events = event.data
+            const jsonevents = JSON.parse(events)
+            if (jsonevents.status === 1) {
+                setConnected(true)
+            }else if (jsonevents.status === 0) {
+                setConnected(false)
+            }
+            console.log('Websocket message: ', jsonevents);
+        };
+        websocket.onclose = () => {
+          console.log('Websocket is closed');
+        };
+        return () => {
+          websocket.close();
+        };
+    }, []);
     return (
-        <Container>
-            <Typography variant="h3" align="center" mb={3}>
-                Device Does’t Connect To WIFI ....
-            </Typography>
-            <Typography sx={{ color: 'text.secondary', mb: 4 }} align="center">
-                please connect to wifi with the following steps ..
-            </Typography>
-            <Grid container spacing={2} justifyContent="center">
-                <Grid item xs={12} sm={6} md={4}>
-                    <ListItem>
-                        <ListItemAvatar>
-                            <Avatar>
-                                <WifiIcon />
-                            </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText primary="Open Mobile Apps or Computers" secondary="Find WIFI Setting" />
-                    </ListItem>
-                    <ListItem>
-                        <ListItemAvatar>
-                            <Avatar>
-                                <PermScanWifiIcon />
-                            </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText primary="Enter the wifi name or SSID, and password" secondary="in this step doing 2 times" />
-                    </ListItem>
+        !connected ?
+        (
+            <Container>
+                <Typography variant="h3" align="center" mb={3}>
+                    Device Does’t Connect To WIFI ....
+                </Typography>
+                <Typography sx={{ color: 'text.secondary', mb: 4 }} align="center">
+                    please connect to wifi with the following steps ..
+                </Typography>
+                <Grid container spacing={2} justifyContent="center">
+                    <Grid item xs={12} sm={6} md={4}>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <WifiIcon />
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="Open Mobile Apps or Computers" secondary="Find WIFI Setting" />
+                        </ListItem>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <PermScanWifiIcon />
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="Enter the wifi name or SSID, and password" secondary="in this step doing 2 times" />
+                        </ListItem>
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4}>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <ConnectWithoutContactIcon />
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="Connect the wifi" secondary="on the cell phone to the ESP32Kit" />
+                        </ListItem>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <CheckCircleIcon />
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="The device is successfully connected" secondary="in this step doing 2 times" />
+                        </ListItem>
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4}>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <LanguageIcon />
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="Open a web browser" secondary="(safari, google chrome, mozilla)" />
+                        </ListItem>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <Avatar>
+                                    <OpenInBrowserIcon />
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary="Enter the address" secondary="http://172.9.0.0" />
+                        </ListItem>
+                    </Grid>
                 </Grid>
-                <Grid item xs={12} sm={6} md={4}>
-                    <ListItem>
-                        <ListItemAvatar>
-                            <Avatar>
-                                <ConnectWithoutContactIcon />
-                            </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText primary="Connect the wifi" secondary="on the cell phone to the ESP32Kit" />
-                    </ListItem>
-                    <ListItem>
-                        <ListItemAvatar>
-                            <Avatar>
-                                <CheckCircleIcon />
-                            </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText primary="The device is successfully connected" secondary="in this step doing 2 times" />
-                    </ListItem>
-                </Grid>
-                <Grid item xs={12} sm={6} md={4}>
-                    <ListItem>
-                        <ListItemAvatar>
-                            <Avatar>
-                                <LanguageIcon />
-                            </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText primary="Open a web browser" secondary="(safari, google chrome, mozilla)" />
-                    </ListItem>
-                    <ListItem>
-                        <ListItemAvatar>
-                            <Avatar>
-                                <OpenInBrowserIcon />
-                            </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText primary="Enter the address" secondary="http://172.9.0.0" />
-                    </ListItem>
-                </Grid>
-            </Grid>
-            <Box
-                component="img"
-                sx={{
-                    width: 0.9,
-                    maxHeight: 300,
-                    my: 4, // Margin vertical
-                    display: 'block', // Ensures the image does not inline with text
-                    mx: 'auto' // Centers the image horizontally
-                }}
-                src="/assets/connecting1.svg"
-                alt="Connecting to Wi-Fi"
-            />
-        </Container>
+                <Box
+                    component="img"
+                    sx={{
+                        width: 0.9,
+                        maxHeight: 300,
+                        my: 4,
+                        display: 'block',
+                        mx: 'auto' 
+                    }}
+                    src="/assets/connecting1.svg"
+                    alt="Connecting to Wi-Fi"
+                />
+             </Container>
+        )
+        :
+        (
+            <Container>
+                <Typography variant="h3" align="center" mb={3}>
+                    Device Connect To WIFI
+                </Typography>
+                <Box
+                    component="img"
+                    sx={{
+                        width: 0.9,
+                        maxHeight: 300,
+                        my: 4,
+                        display: 'block',
+                        mx: 'auto' 
+                    }}
+                    src="/assets/connecting1.svg"
+                    alt="Connecting to Wi-Fi"
+                />
+             </Container>
+        )
     );
 }

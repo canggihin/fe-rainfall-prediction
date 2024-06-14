@@ -99,7 +99,6 @@ export default function UserPage() {
   const notFound = !rainfallData.length && !!rainfallData.length;
 
   return (
-    <>
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4">Data Table of Rainfall</Typography>
@@ -160,6 +159,5 @@ export default function UserPage() {
           />
         </Card>
       </Container>
-  </>
   );
 }
