@@ -34,7 +34,7 @@ export default function DeviceView() {
             }else if (jsonevents.status === 0) {
                 setConnected(false)
             }
-            console.log('Websocket message: ', jsonevents);
+            console.log('Websocket success getting message: ', jsonevents);
         };
         websocket.onclose = () => {
           console.log('Websocket is closed');
