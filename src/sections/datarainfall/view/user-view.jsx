@@ -160,66 +160,6 @@ export default function UserPage() {
           />
         </Card>
       </Container>
-      <Container>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5} mt={5}>
-          <Typography variant="h4">Result Model Machine Learning</Typography>
-        </Stack>
-
-        <Card>
-          <Scrollbar>
-            <TableContainer sx={{ overflow: 'unset' }}>
-              <Table sx={{ minWidth: 800 }}>
-                <UserTableHead
-                  order={order}
-                  orderBy={orderBy}
-                  rowCount={users.length}
-                  numSelected={selected.length}
-                  onRequestSort={handleSort}
-                  onSelectAllClick={handleSelectAllClick}
-                  headLabel={[
-                    { id: 'time', label: 'DateTime', align: 'center' },
-                    { id: 'temperature', label: 'Temperature' },
-                    { id: 'pressure', label: 'Air Pressure' },
-                    { id: 'humidity', label: 'Air Humidity' },
-                    { id: 'rain_was_fall', label: 'Rainfall', align: 'center' },
-                  ]}
-                />
-                <TableBody>
-                  {dataFiltered
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => (
-                      <UserTableRow
-                        key={row.id}
-                        temperature={row.temperature}
-                        pressure={row.pressure}
-                        rainfall={row.rain_was_fall}
-                        humidity={row.pressure}
-                        dateTime={row.formattedTime}
-                      />
-                    ))}
-
-                  <TableEmptyRows
-                    height={77}
-                    emptyRows={emptyRows(page, rowsPerPage, rainfallData.length)}
-                  />
-
-                  {notFound && <TableNoData />}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Scrollbar>
-
-          <TablePagination
-            page={page}
-            component="div"
-            count={rainfallData.length}
-            rowsPerPage={rowsPerPage}
-            onPageChange={handleChangePage}
-            rowsPerPageOptions={[5, 10, 25]}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Card>
-      </Container>
   </>
   );
 }
