@@ -46,6 +46,6 @@ UserTableRow.propTypes = {
   pressure: PropTypes.any,
   temperature: PropTypes.any,
   humidity: PropTypes.any,
-  rainfall: PropTypes.string,
+  rainfall: PropTypes.number,
   dateTime: PropTypes.any,
 };

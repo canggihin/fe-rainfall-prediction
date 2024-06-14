@@ -40,7 +40,7 @@ export default function UserPage() {
 
   useEffect(() => {
     handleFetchDataRainfall();
-    const websocket = new WebSocket(`${BaseURLws}/ws`);
+    const websocket = new WebSocket(`${BaseURLws}/ws/sensor`);
     websocket.onopen = () => {
       console.log('Websocket is open');
     };
@@ -128,7 +128,7 @@ export default function UserPage() {
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => (
                       <UserTableRow
-                        key={row.id}
+                        key={row.formattedTime}
                         temperature={row.temperature}
                         pressure={row.pressure}
                         rainfall={row.rain_was_fall}

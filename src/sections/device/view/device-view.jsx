@@ -22,7 +22,7 @@ export default function DeviceView() {
     const [connected, setConnected] = useState(false)
 
     useEffect(() => {
-        const websocket = new WebSocket(`${BaseURLws}/ws`);
+        const websocket = new WebSocket(`${BaseURLws}/ws/system`);
         websocket.onopen = () => {
           console.log('Websocket is open');
         };
@@ -43,6 +43,7 @@ export default function DeviceView() {
           websocket.close();
         };
     }, []);
+
     return (
         !connected ?
         (
