@@ -15,11 +15,15 @@ import PermScanWifiIcon from '@mui/icons-material/PermScanWifi';
 import OpenInBrowserIcon from '@mui/icons-material/OpenInBrowser';
 import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
 
+import AppWidgetSummary from '../app-widget-summary';
 import { BaseURLws } from '../../../config/configVars';
 
 export default function DeviceView() {
 
     const [connected, setConnected] = useState(false)
+    const [totalSensor, setTotalSensor] = useState(0)
+    const [cpuStatus, setCpuStatus] = useState(0)
+    const [ramStatus, setRamStatus] = useState(0)
 
     useEffect(() => {
         const websocket = new WebSocket(`${BaseURLws}/ws/system`);
@@ -29,12 +33,15 @@ export default function DeviceView() {
         websocket.onmessage = (event) => {
             const events = event.data
             const jsonevents = JSON.parse(events)
-            if (jsonevents.status === 1) {
+            console.log('Websocket message: ', jsonevents);
+            if ( jsonevents.cpu_consume !== ""  && jsonevents.ram_consume !== "" && jsonevents.status === 1) {
                 setConnected(true)
-            }else if (jsonevents.status === 0) {
+                setCpuStatus(parseInt(jsonevents.cpu_consume, 10))
+                setRamStatus(parseInt(jsonevents.ram_consume, 10))
+                setTotalSensor(jsonevents.total_sensor)
+            } else {
                 setConnected(false)
             }
-            console.log('Websocket success getting message: ', jsonevents);
         };
         websocket.onclose = () => {
           console.log('Websocket is closed');
@@ -106,7 +113,7 @@ export default function DeviceView() {
                                     <OpenInBrowserIcon />
                                 </Avatar>
                             </ListItemAvatar>
-                            <ListItemText primary="Enter the address" secondary="http://172.9.0.0" />
+                            <ListItemText primary="Enter the address" secondary="http://192.168.4.1" />
                         </ListItem>
                     </Grid>
                 </Grid>
@@ -126,22 +133,47 @@ export default function DeviceView() {
         )
         :
         (
-            <Container>
-                <Typography variant="h3" align="center" mb={3}>
+            <Container maxWidth="xl">
+                <Typography variant="h3" mb={3}>
                     Device Connect To WIFI
                 </Typography>
-                <Box
-                    component="img"
-                    sx={{
-                        width: 0.9,
-                        maxHeight: 300,
-                        my: 4,
-                        display: 'block',
-                        mx: 'auto' 
-                    }}
-                    src="/assets/connecting1.svg"
-                    alt="Connecting to Wi-Fi"
-                />
+                <Grid container spacing={3}>
+                    <Grid item xs={12} sm={6} md={3}>
+                        <AppWidgetSummary
+                            title="Sensor Active"
+                            total={totalSensor}
+                            color="success"
+                            satuan="Sensor"
+                            icon={<img alt="icon" src="/assets/icons/glass/sensors_active.png" />}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={3}>
+                        <AppWidgetSummary
+                            title="CPU Consume"
+                            total={cpuStatus}
+                            color="success"
+                            satuan="ms"
+                            icon={<img alt="icon" src="/assets/icons/glass/cpu_status.png" />}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={3}>
+                        <AppWidgetSummary
+                            title="RAM Consme"
+                            total={ramStatus}
+                            color="success"
+                            satuan="ms"
+                            icon={<img alt="icon" src="/assets/icons/glass/ram_consume.png" />}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={3}>
+                        <AppWidgetSummary
+                            title="Status Device"
+                            total={714000}
+                            color="success"
+                            icon={<img alt="icon" src="/assets/icons/glass/cloud.png" />}
+                        />
+                    </Grid>
+                </Grid>
              </Container>
         )
     );
