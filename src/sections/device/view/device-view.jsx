@@ -34,7 +34,7 @@ export default function DeviceView() {
             const events = event.data
             const jsonevents = JSON.parse(events)
             console.log('Websocket message: ', jsonevents);
-            if ( jsonevents.cpu_consume !== ""  && jsonevents.ram_consume !== "" && jsonevents.status === 1) {
+            if ( jsonevents.cpu_consume !== ""  && jsonevents.ram_consume !== "" && jsonevents.battery_level !== 0) {
                 setConnected(true)
                 setCpuStatus(parseInt(jsonevents.cpu_consume, 10))
                 setRamStatus(parseInt(jsonevents.ram_consume, 10))

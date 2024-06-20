@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 
+import Skeleton from '@mui/material/Skeleton';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
@@ -18,6 +19,7 @@ export default function AppView() {
   const [dataHumd, setDataHumd] = useState([]);
   const [dataPress, setDataPress] = useState([]);
   const [formattedTime, setFormattedTime] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     handleFetchDataAvg();
@@ -49,48 +51,62 @@ export default function AppView() {
       setDataHumd(humidities);
       setDataPress(pressures);
       setFormattedTime(formattedTimes);
+      setLoading(false);
     } catch (error) {
       console.error('Error fetching data: ', error);
     }
   };  
   return (
-    <Container maxWidth="xl">
-      <Typography variant="h4" sx={{ mb: 5 }}>
-        Rainfall Dataset Overview ⛈️🌧️
-      </Typography>
-
-      <Grid container spacing={3}>
-        <Grid xs={16} md={12} lg={12}>
-          <AppWebsiteVisits
-            title="Average Data Atmosphere When Rainfall Per Day"
-            subheader="This is the average data per day for the rainfall dataset."
-            chart={{
-              labels: formattedTime,
-              series: [
-                {
-                  name: 'Air Pressure',
-                  type: 'column',
-                  fill: 'solid',
-                  data: dataPress,
-                  
-                },
-                {
-                  name: 'Air Humidity',
-                  type: 'area',
-                  fill: 'gradient',
-                  data: dataHumd,
-                },
-                {
-                  name: 'Air Temperature',
-                  type: 'line',
-                  fill: 'solid',
-                  data: dataTemp,
-                },
-              ],
-            }}
-          />
+    loading ? (
+      <Container maxWidth="xl">
+        <Typography variant="h4" sx={{ mb: 5 }}>
+           Rainfall Dataset Overview ⛈️🌧️
+        </Typography>
+        <Grid container spacing={3}>
+          <Grid xs={16} md={12} lg={12}>
+            <Skeleton variant="rectangular" width={1800} height={60} />
+          </Grid>
         </Grid>
-      </Grid>
-    </Container>
+      </Container>
+    ) : (
+        <Container maxWidth="xl">
+          <Typography variant="h4" sx={{ mb: 5 }}>
+            Rainfall Dataset Overview ⛈️🌧️
+          </Typography>
+
+          <Grid container spacing={3}>
+            <Grid xs={16} md={12} lg={12}>
+              <AppWebsiteVisits
+                title="Average Data Atmosphere When Rainfall Per Day"
+                subheader="This is the average data per day for the rainfall dataset."
+                chart={{
+                  labels: formattedTime,
+                  series: [
+                    {
+                      name: 'Air Pressure',
+                      type: 'column',
+                      fill: 'solid',
+                      data: dataPress,
+                      
+                    },
+                    {
+                      name: 'Air Humidity',
+                      type: 'area',
+                      fill: 'gradient',
+                      data: dataHumd,
+                    },
+                    {
+                      name: 'Air Temperature',
+                      type: 'line',
+                      fill: 'solid',
+                      data: dataTemp,
+                    },
+                  ],
+                }}
+              />
+            </Grid>
+          </Grid>
+        </Container>
+    )
   );
 }

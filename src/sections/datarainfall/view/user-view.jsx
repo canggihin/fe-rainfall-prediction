@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
+import Skeleton from '@mui/material/Skeleton';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import Typography from '@mui/material/Typography';
@@ -38,6 +39,8 @@ export default function UserPage() {
 
   const [rainfallData, setRainfallData] = useState([]);
 
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     handleFetchDataRainfall();
     const websocket = new WebSocket(`${BaseURLws}/ws/sensor`);
@@ -60,6 +63,7 @@ export default function UserPage() {
     try {
       const response = await axios.get(`${BaseURL}/data`);
       setRainfallData(response.data.data);
+      setLoading(false);
     } catch (error) {
       console.error('Error fetching data: ', error);
     }
@@ -99,11 +103,24 @@ export default function UserPage() {
   const notFound = !rainfallData.length && !!rainfallData.length;
 
   return (
+    loading ? (
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4">Data Table of Rainfall</Typography>
         </Stack>
-
+        <Card>
+          <Scrollbar>
+            <TableContainer sx={{ overflow: 'unset' }}>
+              <Skeleton variant="rectangular" width={1800} height={60} />
+            </TableContainer>
+          </Scrollbar>
+        </Card>
+      </Container>
+    ) : (
+      <Container>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+          <Typography variant="h4">Data Table of Rainfall</Typography>
+        </Stack>
         <Card>
           <Scrollbar>
             <TableContainer sx={{ overflow: 'unset' }}>
@@ -159,5 +176,6 @@ export default function UserPage() {
           />
         </Card>
       </Container>
+    )
   );
 }

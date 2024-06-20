@@ -9,6 +9,7 @@ import { shadows } from './shadows';
 import { overrides } from './overrides';
 import { typography } from './typography';
 import { customShadows } from './custom-shadows';
+import  ProtectedRoute  from '../protectedRoute';
 
 // ----------------------------------------------------------------------
 
@@ -31,7 +32,9 @@ export default function ThemeProvider({ children }) {
   return (
     <MUIThemeProvider theme={theme}>
       <CssBaseline />
-      {children}
+      <ProtectedRoute>
+        {children}
+      </ProtectedRoute>
     </MUIThemeProvider>
   );
 }
