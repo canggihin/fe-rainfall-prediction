@@ -24,6 +24,7 @@ export default function DeviceView() {
     const [totalSensor, setTotalSensor] = useState(0)
     const [cpuStatus, setCpuStatus] = useState(0)
     const [ramStatus, setRamStatus] = useState(0)
+    const [batteryLevel, setBatteryLevel] = useState(0)
 
     useEffect(() => {
         const websocket = new WebSocket(`${BaseURLws}/ws/system`);
@@ -33,7 +34,11 @@ export default function DeviceView() {
         websocket.onmessage = (event) => {
             const events = event.data
             const jsonevents = JSON.parse(events)
-            console.log('Websocket message: ', jsonevents);
+            console.log('Websocket message: ', jsonevents); 
+            if (jsonevents.battery_level !== "0") {
+                setConnected(true)
+                setBatteryLevel(jsonevents.battery_level, 10)
+            }
             if ( jsonevents.cpu_consume !== ""  && jsonevents.ram_consume !== "" && jsonevents.battery_level !== 0) {
                 setConnected(true)
                 setCpuStatus(parseInt(jsonevents.cpu_consume, 10))
@@ -167,10 +172,11 @@ export default function DeviceView() {
                     </Grid>
                     <Grid item xs={12} sm={6} md={3}>
                         <AppWidgetSummary
-                            title="Status Device"
-                            total={714000}
+                            title="Battery Level"
+                            total={batteryLevel}
                             color="success"
-                            icon={<img alt="icon" src="/assets/icons/glass/cloud.png" />}
+                            icon={<img alt="icon" src="/assets/icons/glass/bettery.png" />}
+                            satuan="%"
                         />
                     </Grid>
                 </Grid>

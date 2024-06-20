@@ -149,7 +149,7 @@ export default function UserPage() {
                         temperature={row.temperature}
                         pressure={row.pressure}
                         rainfall={row.rain_was_fall}
-                        humidity={row.pressure}
+                        humidity={row.humidity}
                         dateTime={row.formattedTime}
                       />
                     ))}
