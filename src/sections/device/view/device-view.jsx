@@ -35,16 +35,19 @@ export default function DeviceView() {
             const events = event.data
             const jsonevents = JSON.parse(events)
             console.log('Websocket message: ', jsonevents); 
-            if (jsonevents.battery_level !== "0") {
+            if (jsonevents.battery_level !== 0) {
+                localStorage.setItem('connected', true)
                 setConnected(true)
                 setBatteryLevel(jsonevents.battery_level, 10)
             }
             if ( jsonevents.cpu_consume !== ""  && jsonevents.ram_consume !== "" && jsonevents.battery_level !== 0) {
+                localStorage.setItem('connected', true)
                 setConnected(true)
                 setCpuStatus(parseInt(jsonevents.cpu_consume, 10))
                 setRamStatus(parseInt(jsonevents.ram_consume, 10))
                 setTotalSensor(jsonevents.total_sensor)
             } else {
+                localStorage.setItem('connected', false)
                 setConnected(false)
             }
         };
