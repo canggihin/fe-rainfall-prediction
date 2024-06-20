@@ -36,7 +36,7 @@ export default function UserTableRow({
         <TableCell>{humidity} %</TableCell>
 
         <TableCell align="center">
-          <Label color={rainfall === 1 ? 'success' : 'error' }>{rainfall === 1 ? 'Terjadi Hujan' : 'Tidak Hujan'}</Label>
+          <Label color={rainfall === 1 ? 'success' : 'error' }>{rainfall === 0 ? 'Terjadi Hujan' : 'Tidak Hujan'}</Label>
         </TableCell>
       </TableRow>
   );
