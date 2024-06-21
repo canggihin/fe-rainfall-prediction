@@ -24,10 +24,22 @@ export default function DeviceView() {
         const savedConnected = localStorage.getItem('connected');
         return savedConnected === 'true';
     });
-    const [totalSensor, setTotalSensor] = useState(0);
-    const [cpuStatus, setCpuStatus] = useState(0);
-    const [ramStatus, setRamStatus] = useState(0);
-    const [batteryLevel, setBatteryLevel] = useState(0);
+    const [totalSensor, setTotalSensor] = useState(() => {
+        const savedTotalSensor = localStorage.getItem('totalSensor');
+        return parseInt(savedTotalSensor, 10) || 0;
+    });
+    const [cpuStatus, setCpuStatus] = useState(() => {
+        const savedCpuStatus = localStorage.getItem('cpuStatus');
+        return parseInt(savedCpuStatus, 10) || 0;
+    });
+    const [ramStatus, setRamStatus] = useState(() => {
+        const savedRamStatus = localStorage.getItem('ramStatus');
+        return parseInt(savedRamStatus, 10) || 0;
+    });
+    const [batteryLevel, setBatteryLevel] = useState(() => {
+        const savedBatteryLevel = localStorage.getItem('batteryLevel');
+        return parseInt(savedBatteryLevel, 10) || 0;
+    });
 
     useEffect(() => {
 
@@ -41,20 +53,36 @@ export default function DeviceView() {
             if (jsonevents.battery_level !== 0) {
                 setConnected(true);
                 localStorage.setItem('connected', 'true');
+                localStorage.setItem('batteryLevel', jsonevents.battery_level);
                 setBatteryLevel(jsonevents.battery_level, 10);
             }
             if (jsonevents.cpu_consume !== "" && jsonevents.ram_consume !== "" && jsonevents.battery_level !== 0) {
                 setConnected(true);
                 localStorage.setItem('connected', 'true');
+                localStorage.setItem('cpuStatus', jsonevents.cpu_consume);
+                localStorage.setItem('ramStatus', jsonevents.ram_consume);
+                localStorage.setItem('totalSensor', jsonevents.total_sensor);
                 setCpuStatus(parseInt(jsonevents.cpu_consume, 10));
                 setRamStatus(parseInt(jsonevents.ram_consume, 10));
                 setTotalSensor(jsonevents.total_sensor);
             } else {
+                localStorage.removeItem('cpuStatus');
+                localStorage.removeItem('ramStatus');
+                localStorage.removeItem('totalSensor');
+                localStorage.removeItem('batteryLevel');
+                localStorage.removeItem('connected');
                 setConnected(false);
                 localStorage.setItem('connected', 'false');
             }
         };
         websocket.onclose = () => {
+            localStorage.removeItem('cpuStatus');
+            localStorage.removeItem('ramStatus');
+            localStorage.removeItem('totalSensor');
+            localStorage.removeItem('batteryLevel');
+            localStorage.removeItem('connected');
+            setConnected(false);
+            localStorage.setItem('connected', 'false');
             console.log('Websocket is closed');
         };
         return () => {
