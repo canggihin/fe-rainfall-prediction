@@ -8,7 +8,7 @@ export default function DevicePage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard | Data Table </title>
+        <title> Device | Status Connecting  </title>
       </Helmet>
 
       <DeviceView />
