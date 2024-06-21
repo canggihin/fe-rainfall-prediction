@@ -20,42 +20,45 @@ import { BaseURLws } from '../../../config/configVars';
 
 export default function DeviceView() {
 
-    const [connected, setConnected] = useState(false)
-    const [totalSensor, setTotalSensor] = useState(0)
-    const [cpuStatus, setCpuStatus] = useState(0)
-    const [ramStatus, setRamStatus] = useState(0)
-    const [batteryLevel, setBatteryLevel] = useState(0)
+    const [connected, setConnected] = useState(() => {
+        const savedConnected = localStorage.getItem('connected');
+        return savedConnected === 'true';
+    });
+    const [totalSensor, setTotalSensor] = useState(0);
+    const [cpuStatus, setCpuStatus] = useState(0);
+    const [ramStatus, setRamStatus] = useState(0);
+    const [batteryLevel, setBatteryLevel] = useState(0);
 
     useEffect(() => {
+
         const websocket = new WebSocket(`${BaseURLws}/ws/system`);
         websocket.onopen = () => {
-          console.log('Websocket is open');
+            console.log('Websocket is open');
         };
         websocket.onmessage = (event) => {
-            const events = event.data
-            const jsonevents = JSON.parse(events)
-            console.log('Websocket message: ', jsonevents); 
+            const events = event.data;
+            const jsonevents = JSON.parse(events);
             if (jsonevents.battery_level !== 0) {
-                localStorage.setItem('connected', true)
-                setConnected(true)
-                setBatteryLevel(jsonevents.battery_level, 10)
+                setConnected(true);
+                localStorage.setItem('connected', 'true');
+                setBatteryLevel(jsonevents.battery_level, 10);
             }
-            if ( jsonevents.cpu_consume !== ""  && jsonevents.ram_consume !== "" && jsonevents.battery_level !== 0) {
-                localStorage.setItem('connected', true)
-                setConnected(true)
-                setCpuStatus(parseInt(jsonevents.cpu_consume, 10))
-                setRamStatus(parseInt(jsonevents.ram_consume, 10))
-                setTotalSensor(jsonevents.total_sensor)
+            if (jsonevents.cpu_consume !== "" && jsonevents.ram_consume !== "" && jsonevents.battery_level !== 0) {
+                setConnected(true);
+                localStorage.setItem('connected', 'true');
+                setCpuStatus(parseInt(jsonevents.cpu_consume, 10));
+                setRamStatus(parseInt(jsonevents.ram_consume, 10));
+                setTotalSensor(jsonevents.total_sensor);
             } else {
-                localStorage.setItem('connected', false)
-                setConnected(false)
+                setConnected(false);
+                localStorage.setItem('connected', 'false');
             }
         };
         websocket.onclose = () => {
-          console.log('Websocket is closed');
+            console.log('Websocket is closed');
         };
         return () => {
-          websocket.close();
+            websocket.close();
         };
     }, []);
 
