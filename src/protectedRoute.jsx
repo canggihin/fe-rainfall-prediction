@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import LandingPage from 'src/pages/landingPage';
+import LoginPage from 'src/pages/login';
 
 
 const ProtectedRoute = ({ children }) => {
@@ -14,7 +14,7 @@ const ProtectedRoute = ({ children }) => {
   const isAuthenticated = token && scope === 'someSpecificScope';
 
   if (!isAuthenticated) {
-    return  <LandingPage />;
+    return  <LoginPage />;
   }
 
   return <>{children}</>;
