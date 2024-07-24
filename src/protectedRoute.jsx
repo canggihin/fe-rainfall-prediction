@@ -5,13 +5,10 @@ import LoginPage from 'src/pages/login';
 
 
 const ProtectedRoute = ({ children }) => {
-  localStorage.setItem('token', 'token')
-  localStorage.setItem('scope', 'someSpecificScope')
   const token = localStorage.getItem('token');
-  const scope = localStorage.getItem('scope');
+  const isAuthenticated = token && token != null;
 
   // Check if token and scope meet your requirements
-  const isAuthenticated = token && scope === 'someSpecificScope';
 
   if (!isAuthenticated) {
     return  <LoginPage />;
