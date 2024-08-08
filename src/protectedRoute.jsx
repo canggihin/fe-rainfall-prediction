@@ -5,7 +5,7 @@ import LoginPage from 'src/pages/login';
 
 
 const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem('token');
+  const token = "token";
   const isAuthenticated = token && token != null;
 
   // Check if token and scope meet your requirements

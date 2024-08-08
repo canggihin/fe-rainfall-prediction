@@ -17,6 +17,7 @@ import Scrollbar from 'src/components/scrollbar';
 
 import TableNoData from '../table-no-data';
 import UserTableRow from '../user-table-row';
+import UserModelRow from '../user-model-row';
 import UserTableHead from '../user-table-head';
 import TableEmptyRows from '../table-empty-rows';
 import { BaseURL, BaseURLws } from '../../../config/configVars';
@@ -117,6 +118,7 @@ export default function UserPage() {
         </Card>
       </Container>
     ) : (
+      <>
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4">Data Table of Rainfall</Typography>
@@ -176,6 +178,67 @@ export default function UserPage() {
           />
         </Card>
       </Container>
+      <Container>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5} mt={10}>
+          <Typography variant="h4">Result Model Machine Learning</Typography>
+        </Stack>
+        <Card>
+          <Scrollbar>
+            <TableContainer sx={{ overflow: 'unset' }}>
+              <Table sx={{ minWidth: 800 }}>
+                <UserTableHead
+                  order={order}
+                  orderBy={orderBy}
+                  rowCount={users.length}
+                  numSelected={selected.length}
+                  onRequestSort={handleSort}
+                  onSelectAllClick={handleSelectAllClick}
+                  headLabel={[
+                    { id: 'current_time', label: 'Current Time', align: 'center' },
+                    { id: 'prediction_time', label: 'Prediction Time', align: 'center' },
+                    { id: 'temperature', label: 'Current Temperature' },
+                    { id: 'pressure', label: 'Current Air Pressure' },
+                    { id: 'humidity', label: 'Current Air Humidity' },
+                    { id: 'class_result', label: 'Classification Result', align: 'center' },
+                    { id: 'rain_was_fall', label: 'Prediction Rainfall', align: 'center' },
+                  ]}
+                />
+                <TableBody>
+                  {dataFiltered
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row) => (
+                      <UserModelRow
+                        key={row.formattedTime}
+                        temperature={row.temperature}
+                        pressure={row.pressure}
+                        rainfall={row.rain_was_fall}
+                        humidity={row.humidity}
+                      />
+                    ))}
+
+                  <TableEmptyRows
+                    height={77}
+                    emptyRows={emptyRows(page, rowsPerPage, rainfallData.length)}
+                  />
+
+                  {notFound && <TableNoData />}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Scrollbar>
+
+          <TablePagination
+            page={page}
+            component="div"
+            count={rainfallData.length}
+            rowsPerPage={rowsPerPage}
+            onPageChange={handleChangePage}
+            rowsPerPageOptions={[5, 10, 25]}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Card>
+      </Container>
+      </>
     )
   );
 }
