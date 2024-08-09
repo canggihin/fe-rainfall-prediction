@@ -42,6 +42,16 @@ export default function UserPage() {
 
   const [loading, setLoading] = useState(true);
 
+  const [modelData, setModelData] = useState([
+    {
+      temperature: 0,
+      pressure: 0,
+      humidity: 0,
+      class_result: 0,
+      rainfall: 0,
+    }
+  ]);
+
   useEffect(() => {
     handleFetchDataRainfall();
     const websocket = new WebSocket(`${BaseURLws}/ws/sensor`);
@@ -49,7 +59,26 @@ export default function UserPage() {
       console.log('Websocket is open');
     };
     websocket.onmessage = (event) => {
-      console.log('Websocket message: ', event.data);
+      console.log('Websocket : ', JSON.parse(event.data));
+      const response = JSON.parse(event.data);
+      if (
+        Object.prototype.hasOwnProperty.call(response, 'temperature') &&
+        Object.prototype.hasOwnProperty.call(response, 'pressure') &&
+        Object.prototype.hasOwnProperty.call(response, 'humidity') &&
+        Object.prototype.hasOwnProperty.call(response, 'rainfall') &&
+        Object.prototype.hasOwnProperty.call(response, 'class_result')
+      ) {
+        console.log('Response : masuk ke if');
+          setModelData([
+              {
+                  temperature: response.temperature,
+                  pressure: response.pressure,
+                  humidity: response.humidity,
+                  class_result: response.class_result,
+                  rainfall: response.rainfall,
+              }
+          ]);
+      }
       handleFetchDataRainfall();
     };
     websocket.onclose = () => {
@@ -63,6 +92,7 @@ export default function UserPage() {
   const handleFetchDataRainfall = async () => {
     try {
       const response = await axios.get(`${BaseURL}/data`);
+
       setRainfallData(response.data.data);
       setLoading(false);
     } catch (error) {
@@ -204,15 +234,16 @@ export default function UserPage() {
                   ]}
                 />
                 <TableBody>
-                  {dataFiltered
+                    {modelData
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => (
                       <UserModelRow
                         key={row.formattedTime}
                         temperature={row.temperature}
                         pressure={row.pressure}
-                        rainfall={row.rain_was_fall}
                         humidity={row.humidity}
+                        classResult={row.class_result}
+                        rainfall={row.rainfall}
                       />
                     ))}
 
